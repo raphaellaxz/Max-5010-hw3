@@ -13,12 +13,13 @@ def gen_genome():
 
 
 class Bug:
-    def __init__(self):
+    def __init__(self, genome=None):
         self.g_bases_count = None
         self.c_bases_count = None
-        self.genome = gen_genome()
-        print(f"created object bug with genome {self.genome}, length {len(self.genome)}", end="\n")
-        print(f"fitness: {self.get_fitness()}")
+        if genome:
+            self.genome = genome
+        else:
+            self.genome = gen_genome()
 
     def get_fitness(self):
         if "AAA" in self.genome:
@@ -31,15 +32,8 @@ class Bug:
             return 0
 
     def mutate_random_base(self):
-        print(f"start mutate genome {self.genome}")
         random_index = random.randint(0, len(self.genome) - 1)
-        old_bases = self.genome[random_index]
-        new_bases = gen_random_bases()
-        self.set_base(random_index, new_bases)
-        print(f"mutated genome's index {random_index} from {old_bases} to {new_bases}")
-        print(f"new mutated genome is {self.genome}")
-        print(f"fitness: {self.get_fitness()}")
-        print("\n")
+        self.set_base(random_index, gen_random_bases())
         self.g_bases_count = None
         self.c_bases_count = None
 
@@ -47,6 +41,9 @@ class Bug:
         genome_list = list(self.genome)
         genome_list[index] = bases
         self.genome = "".join(genome_list)
+
+    def __lt__(self, other):
+        return self.get_fitness() < other.get_fitness()
 
 
 def main():
